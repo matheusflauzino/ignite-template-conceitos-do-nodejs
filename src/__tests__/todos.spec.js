@@ -33,6 +33,15 @@ describe('Todos', () => {
     )
   });
 
+
+  it('should not be able to get user when username not exists', async () => {
+    const response = await request(app)
+      .get('/todos')
+      .set('username', 'user-not-exists').expect(400);
+
+    expect(response.body.error).toBeTruthy();
+  });
+
   it('should be able to create a new todo', async () => {
     const userResponse = await request(app)
       .post('/users')
@@ -96,16 +105,16 @@ describe('Todos', () => {
     const getAllTodosResponse = await request(app)
       .get((`/todos/`))
       .set('username', userResponse.body.username);
-    
+
     expect(
       getAllTodosResponse.body.find(
-        (todo)=>todo.id === todoResponse.body.id
+        (todo) => todo.id === todoResponse.body.id
       ))
-    .toMatchObject({
-      title: 'update title',
-      deadline: todoDate.toISOString(),
-      done: false
-    });
+      .toMatchObject({
+        title: 'update title',
+        deadline: todoDate.toISOString(),
+        done: false
+      });
   });
 
   it('should not be able to update a non existing todo', async () => {
